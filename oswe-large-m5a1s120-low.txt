@@ -1,0 +1,78 @@
+User: You are given a small Python project. Your task is to make the project’s behavior match the expectations encoded in its tests.
+
+Rules:
+- Do not change the public API: keep the class name `PrettyTable` and method signatures the same.
+- Prefer the smallest correct change in production code.
+- Do not add new third-party dependencies.
+- Do not delete tests; only adjust tests if they are clearly incorrect (explain why).
+- Keep the project runnable.
+- Provide a short explanation of what you changed and why.
+
+What to do:
+1. Inspect the failing tests by running the test suite.
+2. Identify the minimal root cause in the implementation.
+3. Apply a focused fix so that all tests pass.
+4. Re-run the tests and confirm success.
+
+Project layout (important files):
+- core.py (implementation)
+- test_regression.py (expected behavior)
+
+Commands:
+```
+pip install -r requirements.txt
+python -m pytest -q
+```
+
+Deliverables:
+- The exact code changes you made (as a unified diff patch, or edited file content).
+- The command output showing the final `pytest -q` run.
+- A brief explanation (2–6 sentences) describing the behavior change and why it’s correct in REPORT.md.
+
+
+GitHub Copilot: Read [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/oswe-large-m5a1s120-low/src/minirepro/core.py)
+
+Read [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/oswe-large-m5a1s120-low/tests/test_regression.py)
+
+Now let me run the tests to see what's failing: 
+
+Configuring a Python Environment
+Completed with input: {
+  "resourcePath": "c:\\Users\\v-quansenwen\\work\\real\\prettytable-test\\400\\oswe-large-m5a1s120-low"
+}
+
+Creating a Virtual Environment
+
+Ran terminal command: cd /d "c:\Users\v-quansenwen\work\real\prettytable-test\400\oswe-large-m5a1s120-low" && python -m pytest -q
+
+Ran terminal command:  python -m pytest -q
+
+I can see the issue. In core.py, the code uses `if rows:` to check if there are rows. This calls `__bool__` on the object, which fails for numpy-like arrays with more than one element. The fix is to use `if len(rows):` instead, which checks the length explicitly and avoids the boolean evaluation issue. 
+
+Replacing 12 lines with 12 lines in [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/oswe-large-m5a1s120-low/src/minirepro/core.py)
+
+
+```
+
+```
+Now let me run the tests again to confirm they pass: 
+
+Ran terminal command:  python -m pytest -q
+
+All tests pass. Now let me create the REPORT.md file: 
+
+Created [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/oswe-large-m5a1s120-low/REPORT.md)
+
+## Summary
+
+**The Fix:** Changed `if rows:` to `if len(rows):` in core.py.
+
+**Why:** The `add_rows` method was using boolean evaluation (`if rows:`) to check for emptiness, but numpy-like array objects raise a `ValueError` when their boolean value is ambiguous (i.e., arrays with more than one element). The fix explicitly checks the length of the sequence using `len(rows)`, which works correctly for all array-like objects including numpy arrays.
+
+**Test Results:**
+```
+...                                                                      [100%]
+3 passed in 0.02s
+```
+
+Made changes.
