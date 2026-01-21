@@ -1,0 +1,98 @@
+User: You are given a small Python project. Your task is to make the project’s behavior match the expectations encoded in its tests.
+
+Rules:
+- Do not change the public API: keep the class name `PrettyTable` and method signatures the same.
+- Prefer the smallest correct change in production code.
+- Do not add new third-party dependencies.
+- Do not delete tests; only adjust tests if they are clearly incorrect (explain why).
+- Keep the project runnable.
+- Provide a short explanation of what you changed and why.
+
+What to do:
+1. Inspect the failing tests by running the test suite.
+2. Identify the minimal root cause in the implementation.
+3. Apply a focused fix so that all tests pass.
+4. Re-run the tests and confirm success.
+
+Project layout (important files):
+- core.py (implementation)
+- test_regression.py (expected behavior)
+
+Commands:
+```
+pip install -r requirements.txt
+python -m pytest -q
+```
+
+Deliverables:
+- The exact code changes you made (as a unified diff patch, or edited file content).
+- The command output showing the final `pytest -q` run.
+- A brief explanation (2–6 sentences) describing the behavior change and why it’s correct in REPORT.md.
+
+
+GitHub Copilot: Read [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/Claude-Opus-4.5/src/minirepro/core.py)
+
+Read [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/Claude-Opus-4.5/tests/test_regression.py)
+
+Read [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/Claude-Opus-4.5/requirements.txt)
+
+Now let me run the tests to see what's failing: 
+
+Configuring a Python Environment
+Completed with input: {
+  "resourcePath": "c:\\Users\\v-quansenwen\\work\\real\\prettytable-test\\400\\Claude-Opus-4.5"
+}
+
+Creating a Virtual Environment
+
+Ran terminal command:  python -m pytest -q
+
+I can see the issue. In core.py line 36, the code uses `if rows:` to check if there are any rows. This triggers a boolean evaluation (`__bool__`) on the array-like object, which raises an error for numpy-like arrays with more than one element.
+
+The fix is to use `len(rows) > 0` instead of `if rows:` to check for emptiness. The comment in the docstring even hints at this:
+
+> Note: some array-like objects (e.g., numpy ndarray) do not allow boolean evaluation, so callers may prefer a length check when deciding emptiness. 
+
+Using "Replace String in File"
+
+
+```
+
+```
+Now let me run the tests again to confirm all pass: 
+
+Ran terminal command:  python -m pytest -q
+
+All tests pass. Now let me create the REPORT.md file: 
+
+Created [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/Claude-Opus-4.5/REPORT.md)
+
+Here's a summary of what I did:
+
+## Code Change (unified diff)
+
+```diff
+--- a/src/minirepro/core.py
++++ b/src/minirepro/core.py
+@@ -33,7 +33,7 @@ class PrettyTable:
+             self.add_row(row)
+
+         # Add the final row if any.
+-        if rows:
++        if len(rows) > 0:
+             self.add_row(rows[-1], divider=divider)
+```
+
+## Final Test Output
+
+```
+$ python -m pytest -q
+...                                                                [100%]
+3 passed in 0.02s
+```
+
+## Explanation
+
+The bug was in the `add_rows` method which used `if rows:` to check for a non-empty sequence. This boolean evaluation triggers `__bool__()` on the input object, which fails for numpy-like arrays with multiple elements (they raise a `ValueError` about ambiguous truth values). The fix replaces this with `len(rows) > 0`, which uses `__len__()` instead—a safe operation for all sequence types. This matches the guidance already present in the method's docstring.
+
+Made changes.

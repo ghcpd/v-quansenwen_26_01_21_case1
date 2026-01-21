@@ -1,0 +1,30 @@
+You are given a small Python project. Your task is to make the project’s behavior match the expectations encoded in its tests.
+
+Rules:
+- Do not change the public API: keep the class name `PrettyTable` and method signatures the same.
+- Prefer the smallest correct change in production code.
+- Do not add new third-party dependencies.
+- Do not delete tests; only adjust tests if they are clearly incorrect (explain why).
+- Keep the project runnable.
+- Provide a short explanation of what you changed and why.
+
+What to do:
+1. Inspect the failing tests by running the test suite.
+2. Identify the minimal root cause in the implementation.
+3. Apply a focused fix so that all tests pass.
+4. Re-run the tests and confirm success.
+
+Project layout (important files):
+- core.py (implementation)
+- test_regression.py (expected behavior)
+
+Commands:
+```
+pip install -r requirements.txt
+python -m pytest -q
+```
+
+Deliverables:
+- The exact code changes you made (as a unified diff patch, or edited file content).
+- The command output showing the final `pytest -q` run.
+- A brief explanation (2–6 sentences) describing the behavior change and why it’s correct in REPORT.md.

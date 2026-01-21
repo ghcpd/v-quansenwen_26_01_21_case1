@@ -33,7 +33,7 @@ class PrettyTable:
             self.add_row(row)
 
         # Add the final row if any.
-        if rows:
+        if len(rows) > 0:
             self.add_row(rows[-1], divider=divider)
 
     def add_row(self, row: RowType, *, divider: bool = False) -> None:
