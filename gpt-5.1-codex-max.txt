@@ -1,0 +1,114 @@
+User: You are given a small Python project. Your task is to make the project’s behavior match the expectations encoded in its tests.
+
+Rules:
+- Do not change the public API: keep the class name `PrettyTable` and method signatures the same.
+- Prefer the smallest correct change in production code.
+- Do not add new third-party dependencies.
+- Do not delete tests; only adjust tests if they are clearly incorrect (explain why).
+- Keep the project runnable.
+- Provide a short explanation of what you changed and why.
+
+What to do:
+1. Inspect the failing tests by running the test suite.
+2. Identify the minimal root cause in the implementation.
+3. Apply a focused fix so that all tests pass.
+4. Re-run the tests and confirm success.
+
+Project layout (important files):
+- core.py (implementation)
+- test_regression.py (expected behavior)
+
+Commands:
+```
+pip install -r requirements.txt
+python -m pytest -q
+```
+
+Deliverables:
+- The exact code changes you made (as a unified diff patch, or edited file content).
+- The command output showing the final `pytest -q` run.
+- A brief explanation (2–6 sentences) describing the behavior change and why it’s correct in REPORT.md.
+
+
+GitHub Copilot: Read [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/gpt-5.1-codex-max/src/minirepro/core.py)
+
+Read [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/gpt-5.1-codex-max/tests/test_regression.py)
+
+Configuring a Python Environment
+Completed with input: {
+  "resourcePath": "c:\\Users\\v-quansenwen\\work\\real\\prettytable-test\\400\\gpt-5.1-codex-max"
+}
+
+Creating a Virtual Environment
+
+Ran terminal command: cd /mnt/c/Users/v-quansenwen/work/real/prettytable-test/400/gpt-5.1-codex-max
+
+Ran terminal command: cd /mnt/c/Users/v-quansenwen/work/real/prettytable-test/400/gpt-5.1-codex-max
+
+Read [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/gpt-5.1-codex-max)
+
+Ran terminal command:  pwd
+
+Ran terminal command:  pip install -r requirements.txt
+
+Read [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/gpt-5.1-codex-max/requirements.txt)
+
+Configuring a Python Environment
+Completed with input: {
+  "resourcePath": "c:\\Users\\v-quansenwen\\work\\real\\prettytable-test\\400\\gpt-5.1-codex-max"
+}
+
+Creating a Virtual Environment
+
+Installing pytest>=7.0 in Python 3.14.2
+Completed with input: {
+  "packageList": [
+    "pytest>=7.0"
+  ],
+  "resourcePath": "c:\\Users\\v-quansenwen\\work\\real\\prettytable-test\\400\\gpt-5.1-codex-max"
+}
+
+Ran terminal command:  python -m pytest -q
+
+Using "Apply Patch"
+
+
+```
+
+```
+
+
+Ran terminal command:  python -m pytest -q
+
+Created [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/gpt-5.1-codex-max/REPORT.md)
+
+**What changed**
+- `PrettyTable.add_rows` now checks `len(rows)` before adding the final row to avoid triggering ambiguous truth-value errors on array-like inputs while preserving existing behavior for normal sequences core.py.
+- Added a brief summary of the fix and verification steps in REPORT.md.
+
+**Diff**
+```diff
+diff --git a/src/minirepro/core.py b/src/minirepro/core.py
+index 1bb72cc..32061ea 100644
+--- a/src/minirepro/core.py
++++ b/src/minirepro/core.py
+@@
+-        if rows:
+-            self.add_row(rows[-1], divider=divider)
++        if len(rows):
++            self.add_row(rows[-1], divider=divider)
+diff --git a/REPORT.md b/REPORT.md
+new file mode 100644
+index 0000000..fd0befb
+--- /dev/null
++++ b/REPORT.md
+@@
++Fixed PrettyTable.add_rows to check the length before adding the final row, avoiding boolean evaluation of array-like inputs with ambiguous truth values.
++This keeps add_rows working for numpy-like sequences while preserving existing behavior for normal iterables.
++Verified with python -m pytest -q (3 passed).
+```
+
+**Tests**
+- `python -m pytest -q` → 3 passed
+
+Made changes.
