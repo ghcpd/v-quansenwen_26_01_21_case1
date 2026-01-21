@@ -1,0 +1,98 @@
+User: You are given a small Python project. Your task is to make the project’s behavior match the expectations encoded in its tests.
+
+Rules:
+- Do not change the public API: keep the class name `PrettyTable` and method signatures the same.
+- Prefer the smallest correct change in production code.
+- Do not add new third-party dependencies.
+- Do not delete tests; only adjust tests if they are clearly incorrect (explain why).
+- Keep the project runnable.
+- Provide a short explanation of what you changed and why.
+
+What to do:
+1. Inspect the failing tests by running the test suite.
+2. Identify the minimal root cause in the implementation.
+3. Apply a focused fix so that all tests pass.
+4. Re-run the tests and confirm success.
+
+Project layout (important files):
+- core.py (implementation)
+- test_regression.py (expected behavior)
+
+Commands:
+```
+pip install -r requirements.txt
+python -m pytest -q
+```
+
+Deliverables:
+- The exact code changes you made (as a unified diff patch, or edited file content).
+- The command output showing the final `pytest -q` run.
+- A brief explanation (2–6 sentences) describing the behavior change and why it’s correct in REPORT.md.
+
+
+GitHub Copilot: I'll help you fix the failing tests in this Python project. Let me start by exploring the codebase and running the tests to identify the issues. 
+
+Read [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/Claude-sonnet-4.5/requirements.txt)
+
+Read [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/Claude-sonnet-4.5/src/minirepro/core.py)
+
+Read [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/Claude-sonnet-4.5/tests/test_regression.py)
+
+Now let me run the test suite to see what's failing: 
+
+Configuring a Python Environment
+Completed with input: {
+  "resourcePath": "c:\\Users\\v-quansenwen\\work\\real\\prettytable-test\\400\\Claude-sonnet-4.5"
+}
+
+Creating a Virtual Environment
+
+Ran terminal command: cd 'c:\Users\v-quansenwen\work\real\prettytable-test\400\Claude-sonnet-4.5'
+
+Ran terminal command:  pip install -r requirements.txt
+
+Installing pytest>=7.0 in Python 3.14.2
+
+Ran terminal command:  python -m pytest -q
+
+Perfect! I can see the issue clearly. The problem is in the `add_rows` method at line 36 of core.py. The code uses `if rows:` which triggers the `__bool__` method on array-like objects (like numpy arrays). According to the docstring in the method and the test expectations, we should use a length check instead to avoid this boolean evaluation.
+
+Let me fix this: 
+
+Using "Replace String in File"
+
+
+```
+
+```
+Now let's re-run the tests to confirm the fix works: 
+
+Ran terminal command:  python -m pytest -q
+
+Excellent! All tests now pass. Let me create the REPORT.md with the explanation: 
+
+Created [](file:///c%3A/Users/v-quansenwen/work/real/prettytable-test/400/Claude-sonnet-4.5/REPORT.md)
+
+## Summary
+
+I've successfully fixed the failing tests. Here's what was done:
+
+**Code Change:**
+- **File:** core.py
+- **Change:** Replaced `if rows:` with `if len(rows) > 0:`
+
+**Root Cause:**
+The `add_rows` method was using boolean evaluation (`if rows:`) to check for empty sequences, which triggers the `__bool__()` method on array-like objects. NumPy arrays and similar objects raise a `ValueError` for ambiguous truth values when they contain more than one element.
+
+**Fix:**
+Using an explicit length check (`len(rows) > 0`) avoids boolean evaluation entirely and works correctly with all array-like objects, including those that mimic numpy's behavior. This matches the method's docstring guidance about using length checks for array-like objects.
+
+**Test Results:**
+```
+...                                                                                                                                                                               [100%]
+3 passed in 0.02s
+```
+
+All tests now pass! The fix is minimal, preserves the public API, and addresses the exact issue described in the tests.
+
+Made changes.
